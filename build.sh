@@ -20,7 +20,7 @@ if [[ ! -d "llvm-source-50" ]]; then
 fi
 
 # check for libc++
-if [[ !(-d "./llvm-build/output/lib") ]]; then
+if [[ ! (-d "./llvm-build/output/lib") ]]; then
     echo "ERROR: clang++ and libc++ is necessary to compile AirSim and run it in Unreal engine"
     echo "Please run setup.sh first."
     exit 1
@@ -60,7 +60,7 @@ else
 fi
 
 #install EIGEN library
-if [[ !(-d "./AirLib/deps/eigen3/Eigen") ]]; then 
+if [[ ! (-d "./AirLib/deps/eigen3/Eigen") ]]; then 
     echo "eigen is not installed. Please run setup.sh first."
     exit 1
 fi
