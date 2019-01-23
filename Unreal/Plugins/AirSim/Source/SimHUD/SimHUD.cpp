@@ -344,6 +344,7 @@ void ASimHUD::initializeSubWindows()
 
 // Attempts to parse the settings text from one of multiple locations.
 // First, check the command line for settings provided via "-s" or "--settings" arguments
+// Next, check the command line for settings file path provided via "--airsim" argument.
 // Next, check the executable's working directory for the settings file.
 // Finally, check the user's documents folder. 
 // If the settings file cannot be read, throw an exception
@@ -351,6 +352,8 @@ void ASimHUD::initializeSubWindows()
 bool ASimHUD::getSettingsText(std::string& settingsText) 
 {
     return (getSettingsTextFromCommandLine(settingsText)
+        ||
+        readSettingsTextFromFile(FString(getSettingsFilePathFromCommandLine("settings.json").c_str()), settingsText)
         ||
         readSettingsTextFromFile(FString(msr::airlib::Settings::getExecutableFullPath("settings.json").c_str()), settingsText)
         ||
@@ -379,6 +382,21 @@ bool ASimHUD::getSettingsTextFromCommandLine(std::string& settingsText)
     }
 
     return found;
+}
+
+std::string ASimHUD::getSettingsFilePathFromCommandLine(std::string fileName)
+{
+    std::string path;
+    FString settingsTextFStringParsed;
+    const TCHAR* commandLineArgs = FCommandLine::Get();
+
+    if (FParse::Param(commandLineArgs, TEXT("-airsim"))) {
+        FString commandLineArgsFString = FString(commandLineArgs);
+        int idx = commandLineArgsFString.Find(TEXT("-airsim"));
+        FString settingFilePath = commandLineArgsFString.RightChop(idx + 8);
+        path = common_utils::FileSystem::combine(std::string(TCHAR_TO_UTF8(*settingFilePath)), fileName);
+    }
+    return path;
 }
 
 bool ASimHUD::readSettingsTextFromFile(FString settingsFilepath, std::string& settingsText) 
