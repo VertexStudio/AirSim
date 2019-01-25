@@ -36,3 +36,4 @@ target_link_libraries(${PROJECT_NAME} ${RPC_LIB})
 target_link_libraries(${PROJECT_NAME} MADARA)
 target_link_libraries(${PROJECT_NAME} GAMS)
 target_link_libraries(${PROJECT_NAME} boost_system)
+
