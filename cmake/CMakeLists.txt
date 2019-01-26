@@ -9,6 +9,7 @@ add_subdirectory("DroneShell")
 add_subdirectory("DroneServer")
 add_subdirectory("Multirotor")
 add_subdirectory("SettingsGenerator")
+add_subdirectory("AutoAgent")
 
 if(DEFINED ENV{SIMBOTIC_GAMS})
   add_subdirectory("MultiAgent")
