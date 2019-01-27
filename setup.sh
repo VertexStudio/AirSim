@@ -58,25 +58,29 @@ else #linux
     export COMPILER=clang++-5.0
 fi
 
-#download cmake - we need v3.9+ which is not out of box in Ubuntu 16.04
-if [[ ! -d "cmake_build/bin" ]]; then
-    echo "Downloading cmake..."
-    wget https://cmake.org/files/v3.10/cmake-3.10.2.tar.gz \
-        -O cmake.tar.gz
-    tar -xzf cmake.tar.gz
-    rm cmake.tar.gz
-    rm -rf ./cmake_build
-    mv ./cmake-3.10.2 ./cmake_build
-    pushd cmake_build
-    ./bootstrap
-    make
-    popd
-fi
-
-if [ "$(uname)" == "Darwin" ]; then
-    CMAKE="$(greadlink -f cmake_build/bin/cmake)"
+if [ "$(lsb_release -cs)" == "bionic" ]; then
+    CMAKE=cmake
 else
-    CMAKE="$(readlink -f cmake_build/bin/cmake)"
+    #download cmake - we need v3.9+ which is not out of box in Ubuntu 16.04
+    if [[ ! -d "cmake_build/bin" ]]; then
+        echo "Downloading cmake..."
+        wget https://cmake.org/files/v3.10/cmake-3.10.2.tar.gz \
+            -O cmake.tar.gz
+        tar -xzf cmake.tar.gz
+        rm cmake.tar.gz
+        rm -rf ./cmake_build
+        mv ./cmake-3.10.2 ./cmake_build
+        pushd cmake_build
+        ./bootstrap
+        make
+        popd
+    fi
+
+    if [ "$(uname)" == "Darwin" ]; then
+        CMAKE="$(greadlink -f cmake_build/bin/cmake)"
+    else
+        CMAKE="$(readlink -f cmake_build/bin/cmake)"
+    fi
 fi
 
 # Download rpclib
