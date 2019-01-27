@@ -19,13 +19,14 @@ include_directories(
   $ENV{MADARA_ROOT}/include
   $ENV{CAPNP_ROOT}/c++/src
   $ENV{GAMS_ROOT}/src
-  ${AIRSIM_ROOT}/llvm-source-50/projects/libcxxabi/include
+  ## ${AIRSIM_ROOT}/llvm-source-50/projects/libcxxabi/include
+  ${AIRSIM_ROOT}/llvm-build/projects/libcxx/include/c++build
+  ## ${AIRSIM_ROOT}/llvm-build/include/c++/v1
 )
 
 link_directories(
   $ENV{MADARA_ROOT}/lib
   $ENV{GAMS_ROOT}/lib
-  /usr/lib/x86_64-linux-gnu/
 )
 
 AddExecutableSource()
@@ -33,6 +34,7 @@ AddExecutableSource()
 CommonTargetLink()
 target_link_libraries(${PROJECT_NAME} AirLib)
 target_link_libraries(${PROJECT_NAME} ${RPC_LIB})
+target_link_libraries(${PROJECT_NAME} MavLinkCom)
 target_link_libraries(${PROJECT_NAME} MADARA)
 target_link_libraries(${PROJECT_NAME} GAMS)
 target_link_libraries(${PROJECT_NAME} boost_system)

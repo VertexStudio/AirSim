@@ -1,10 +1,20 @@
+#include "madara/knowledge/containers/NativeDoubleVector.h"
+#include "gams/pose/Euler.h"
+#include "multirotor.h"
+
 #include "common/common_utils/FileSystem.hpp"
 #include <iostream>
 #include <chrono>
 
-#include "madara/knowledge/containers/NativeDoubleVector.h"
-#include "gams/pose/Euler.h"
-#include "multirotor.h"
+#include "common/common_utils/StrictMode.hpp"
+STRICT_MODE_OFF
+#ifndef RPCLIB_MSGPACK
+#define RPCLIB_MSGPACK clmdep_msgpack
+#endif // !RPCLIB_MSGPACK
+#include "rpc/rpc_error.h"
+STRICT_MODE_ON
+
+#include "vehicles/multirotor/api/MultirotorRpcLibClient.hpp"
 
 // factory class for creating a multirotor
 gams::platforms::BasePlatform *
@@ -25,6 +35,10 @@ platforms::multirotor::multirotor(
     gams::variables::Self *self)
     : gams::platforms::BasePlatform(knowledge, sensors, self)
 {
+
+  vehicle_name_ = "agent." + std::to_string(self_->id.to_integer());
+  std::cout << "vehicle_name: " << vehicle_name_ << std::endl;
+
   client_ = new msr::airlib::MultirotorRpcLibClient();
 
   // as an example of what to do here, create a coverage sensor
@@ -55,8 +69,8 @@ platforms::multirotor::multirotor(
     // end create threads
 
     client_->confirmConnection();
-    client_->enableApiControl(true);
-    client_->armDisarm(true);
+    client_->enableApiControl(true, vehicle_name_);
+    client_->armDisarm(true, vehicle_name_);
 
     /**
     * the following should be set when movement is available in your
@@ -109,7 +123,7 @@ double
 platforms::multirotor::get_accuracy(void) const
 {
   // will depend on your localization capabilities for robotics
-  return 0.0;
+  return 1.0;
 }
 
 // Gets Location of platform, within its parent frame. Optional.
@@ -117,7 +131,7 @@ gams::pose::Position
 platforms::multirotor::get_location(void) const
 {
   gams::pose::Position result;
-  auto position = client_->getMultirotorState().getPosition();
+  auto position = client_->getMultirotorState(vehicle_name_).getPosition();
   result.x(position.x());
   result.y(position.y());
   result.z(position.z());
@@ -129,7 +143,7 @@ gams::pose::Orientation
 platforms::multirotor::get_orientation(void) const
 {
   gams::pose::Orientation result;
-  auto orientation = client_->getMultirotorState().getOrientation();
+  auto orientation = client_->getMultirotorState(vehicle_name_).getOrientation();
   gams::pose::Quaternion quat;
   quat.w(orientation.w());
   quat.x(orientation.x());
@@ -164,7 +178,7 @@ int platforms::multirotor::home(void)
    * platform status to determine what to return. For now, we will simply
    * return that we are in the process of moving to the final pose.
    **/
-  client_->goHomeAsync();
+  client_->goHomeAsync(Utils::max<float>(), vehicle_name_);
   return gams::platforms::PLATFORM_IN_PROGRESS;
 }
 
@@ -177,7 +191,7 @@ int platforms::multirotor::land(void)
    * platform status to determine what to return. For now, we will simply
    * return that we are in the process of moving to the final pose.
    **/
-  client_->landAsync();
+  client_->landAsync(60, vehicle_name_);
   return gams::platforms::PLATFORM_IN_PROGRESS;
 }
 
@@ -192,7 +206,9 @@ int platforms::multirotor::move(
    * platform status to determine what to return. For now, we will simply
    * return that we are in the process of moving to the final pose.
    **/
-  client_->moveToPositionAsync(location.x(), location.y(), location.z(), 3.0);
+  client_->moveToPositionAsync(location.x(), location.y(), location.z(), 3.0, 
+    Utils::max<float>(), msr::airlib::DrivetrainType::MaxDegreeOfFreedom,
+    YawMode(), -1, 1, vehicle_name_);
   return gams::platforms::PLATFORM_MOVING;
 }
 
@@ -208,7 +224,7 @@ int platforms::multirotor::rotate(
    * return that we are in the process of moving to the final pose.
    **/
   gams::pose::euler::EulerXYZ e(target);
-  client_->rotateToYawAsync(e.c());
+  client_->rotateToYawAsync(e.c(), Utils::max<float>(), 5, vehicle_name_);
   return gams::platforms::PLATFORM_MOVING;
 }
 
@@ -243,9 +259,8 @@ void platforms::multirotor::stop_move(void)
 // Instructs the agent to take off. Optional.
 int platforms::multirotor::takeoff(void)
 {
-  float takeoffTimeout = 5;
-  client_->takeoffAsync(takeoffTimeout)->waitOnLastTask();
-  client_->hoverAsync()->waitOnLastTask();
+  client_->takeoffAsync(20, vehicle_name_)->waitOnLastTask();
+  client_->hoverAsync(vehicle_name_)->waitOnLastTask();
   return gams::platforms::PLATFORM_OK;
 }
 

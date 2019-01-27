@@ -2,23 +2,17 @@
 #ifndef   _PLATFORM_MULTIROTOR_H_
 #define   _PLATFORM_MULTIROTOR_H_
 
-#include "common/common_utils/StrictMode.hpp"
-STRICT_MODE_OFF
-#ifndef RPCLIB_MSGPACK
-#define RPCLIB_MSGPACK clmdep_msgpack
-#endif // !RPCLIB_MSGPACK
-#include "rpc/rpc_error.h"
-STRICT_MODE_ON
-
-#include "vehicles/multirotor/api/MultirotorRpcLibClient.hpp"
-
-#undef EARTH_RADIUS
-
 #include "gams/platforms/BasePlatform.h"
 #include "gams/platforms/PlatformFactory.h"
 #include "madara/threads/Threader.h"
 #include "gams/pose/GPSFrame.h"
 #include "gams/pose/CartesianFrame.h"
+
+namespace msr {
+    namespace airlib {
+        class MultirotorRpcLibClient;
+    }
+}
 
 namespace platforms
 {        
@@ -180,6 +174,7 @@ namespace platforms
   private:
 
     msr::airlib::MultirotorRpcLibClient* client_;
+    std::string vehicle_name_;
 
     // a threader for managing platform threads
     madara::threads::Threader threader_;    
