@@ -33,29 +33,34 @@ if [ ! -d "./external/rpclib/rpclib-2.2.1" ]; then
     exit 1
 fi
 
-# check for cmake build
-if [ ! -d "./cmake_build" ]; then
-    echo "ERROR: cmake build was not found."
-    echo "please run setup.sh first and then run build.sh again."
-    exit 1
-fi
-
-
-# set up paths of cc and cxx compiler
-if [ "$1" == "gcc" ]; then
-    export CC="gcc"
-    export CXX="g++"
+if [ "$(lsb_release -cs)" == "bionic" ]; then
+    CMAKE=cmake
+    export CC="clang-5.0"
+    export CXX="clang++-5.0"
 else
-    if [ "$(uname)" == "Darwin" ]; then
-        CMAKE="$(greadlink -f cmake_build/bin/cmake)"
+    # check for cmake build
+    if [ ! -d "./cmake_build" ]; then
+        echo "ERROR: cmake build was not found."
+        echo "please run setup.sh first and then run build.sh again."
+        exit 1
+    fi
 
-        export CC=/usr/local/opt/llvm-5.0/bin/clang-5.0
-        export CXX=/usr/local/opt/llvm-5.0/bin/clang++-5.0
+    # set up paths of cc and cxx compiler
+    if [ "$1" == "gcc" ]; then
+        export CC="gcc"
+        export CXX="g++"
     else
-        CMAKE="$(readlink -f cmake_build/bin/cmake)"
+        if [ "$(uname)" == "Darwin" ]; then
+            CMAKE="$(greadlink -f cmake_build/bin/cmake)"
 
-        export CC="clang-5.0"
-        export CXX="clang++-5.0"
+            export CC=/usr/local/opt/llvm-5.0/bin/clang-5.0
+            export CXX=/usr/local/opt/llvm-5.0/bin/clang++-5.0
+        else
+            CMAKE="$(readlink -f cmake_build/bin/cmake)"
+
+            export CC="clang-5.0"
+            export CXX="clang++-5.0"
+        fi
     fi
 fi
 
