@@ -10,6 +10,3 @@ add_subdirectory("DroneServer")
 add_subdirectory("Multirotor")
 add_subdirectory("SettingsGenerator")
 
-if(DEFINED ENV{SIMBOTIC_GAMS})
-  add_subdirectory("MultiAgent")
-endif()
