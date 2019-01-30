@@ -3,6 +3,7 @@
 #include <cmath>
 #include "common/common_utils/FileSystem.hpp"
 #include "common/common_utils/json.hpp"
+#include "common/common_utils/Utils.hpp"
 
 using namespace std;
 using namespace common_utils;
@@ -18,8 +19,16 @@ int main()
     {"Vehicles", nullptr}
   };
 
-  string config_root = FileSystem::combine(getenv("SIMBOTIC_ROOT"), "Config");
-  string settings_root = FileSystem::combine(config_root, "AirSim");
+  // Check if the env variable SIMBOTIC_ROOT exists.
+  string simbotic_root = Utils::getEnv("SIMBOTIC_ROOT");
+  if (simbotic_root.empty()) {
+    cout << "Environment variable SIMBOTIC_ROOT doesn't exist!" 
+         << "\n" << "Exiting." << endl;
+    return 0;
+  }
+
+  string config_root(FileSystem::combine(simbotic_root, "Config"));
+  string settings_root(FileSystem::combine(config_root, "AirSim"));
   ofstream settings_file(FileSystem::combine(settings_root, "settings.json"));
 
   string input;
