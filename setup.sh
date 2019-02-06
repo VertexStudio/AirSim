@@ -1,12 +1,5 @@
 #! /bin/bash
 
-if [[ -d "llvm-source-39" ]]; then
-    echo "Hello there! We just upgraded AirSim to Unreal Engine 4.18."
-    echo "Here are few easy steps for upgrade so everything is new and shiny :)"
-    echo "https://github.com/Microsoft/AirSim/blob/master/docs/unreal_upgrade.md"
-    exit 1
-fi
-
 set -x
 set -e
 
@@ -157,7 +150,7 @@ pushd llvm-build >/dev/null
       -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=./output \
             ../llvm-source-50
 
-make cxx
+make -j`proc` cxx
 
 #install libc++ locally in output folder
 make install-libcxx install-libcxxabi

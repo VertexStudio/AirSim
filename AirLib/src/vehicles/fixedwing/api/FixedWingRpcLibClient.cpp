@@ -7,7 +7,7 @@
 #ifndef AIRLIB_NO_RPC
 //if using Unreal Build system then include precompiled header file first
 
-#include "vehicles/fixedwing/api/FixedwingRpcLibClient.hpp"
+#include "vehicles/fixedwing/api/FixedWingRpcLibClient.hpp"
 
 #include "common/Common.hpp"
 #include "common/ClockFactory.hpp"
@@ -32,7 +32,7 @@ STRICT_MODE_OFF
 #endif
 #include "common/common_utils/WindowsApisCommonPost.hpp"
 
-#include "vehicles/fixedwing/api/FixedwingRpcLibAdapators.hpp"
+#include "vehicles/fixedwing/api/FixedWingRpcLibAdapators.hpp"
 
 STRICT_MODE_ON
 #ifdef _MSC_VER
@@ -44,26 +44,26 @@ __pragma(warning( disable : 4239))
 namespace msr { namespace airlib {
 
 
-typedef msr::airlib_rpclib::FixedwingRpcLibAdapators FixedwingRpcLibAdapators;
+typedef msr::airlib_rpclib::FixedWingRpcLibAdapators FixedWingRpcLibAdapators;
 
-FixedwingRpcLibClient::FixedwingRpcLibClient(const string&  ip_address, uint16_t port, float timeout_sec)
+FixedWingRpcLibClient::FixedWingRpcLibClient(const string&  ip_address, uint16_t port, float timeout_sec)
     : RpcLibClientBase(ip_address, port, timeout_sec)
 {
 }
 
-FixedwingRpcLibClient::~FixedwingRpcLibClient()
+FixedWingRpcLibClient::~FixedWingRpcLibClient()
 {}
 
-void FixedwingRpcLibClient::setFixedwingControls(const FixedwingApiBase::FixedwingControls& controls, const std::string& vehicle_name)
+void FixedWingRpcLibClient::setFixedWingControls(const FixedWingApiBase::FixedWingControls& controls, const std::string& vehicle_name)
 {
     static_cast<rpc::client*>(getClient())->
-        call("setFixedwingControls", FixedwingRpcLibAdapators::FixedwingControls(controls), vehicle_name);
+        call("setFixedWingControls", FixedWingRpcLibAdapators::FixedWingControls(controls), vehicle_name);
 }
 
-FixedwingApiBase::FixedwingState FixedwingRpcLibClient::getFixedwingState(const std::string& vehicle_name)
+FixedWingApiBase::FixedWingState FixedWingRpcLibClient::getFixedWingState(const std::string& vehicle_name)
 {
     return static_cast<rpc::client*>(getClient())->
-        call("getFixedwingState", vehicle_name).as<FixedwingRpcLibAdapators::FixedwingState>().to();
+        call("getFixedWingState", vehicle_name).as<FixedWingRpcLibAdapators::FixedWingState>().to();
 }
 
 

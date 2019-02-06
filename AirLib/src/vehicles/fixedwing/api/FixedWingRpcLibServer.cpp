@@ -7,7 +7,7 @@
 #ifndef AIRLIB_NO_RPC
 //if using Unreal Build system then include precompiled header file first
 
-#include "vehicles/fixedwing/api/FixedwingRpcLibServer.hpp"
+#include "vehicles/fixedwing/api/FixedWingRpcLibServer.hpp"
 
 
 #include "common/Common.hpp"
@@ -29,7 +29,7 @@ STRICT_MODE_OFF
 #endif
 #include "common/common_utils/WindowsApisCommonPost.hpp"
 
-#include "vehicles/fixedwing/api/FixedwingRpcLibAdapators.hpp"
+#include "vehicles/fixedwing/api/FixedWingRpcLibAdapators.hpp"
 
 
 STRICT_MODE_ON
@@ -37,25 +37,25 @@ STRICT_MODE_ON
 
 namespace msr { namespace airlib {
 
-typedef msr::airlib_rpclib::FixedwingRpcLibAdapators FixedwingRpcLibAdapators;
+typedef msr::airlib_rpclib::FixedWingRpcLibAdapators FixedWingRpcLibAdapators;
 
-FixedwingRpcLibServer::FixedwingRpcLibServer(ApiProvider* api_provider, string server_address, uint16_t port)
+FixedWingRpcLibServer::FixedWingRpcLibServer(ApiProvider* api_provider, string server_address, uint16_t port)
     : RpcLibServerBase(api_provider, server_address, port)
 {
     (static_cast<rpc::server*>(getServer()))->
-        bind("getFixedwingState", [&](const std::string& vehicle_name) -> FixedwingRpcLibAdapators::FixedwingState {
-        return FixedwingRpcLibAdapators::FixedwingState(getVehicleApi(vehicle_name)->getFixedwingState());
+        bind("getFixedWingState", [&](const std::string& vehicle_name) -> FixedWingRpcLibAdapators::FixedWingState {
+        return FixedWingRpcLibAdapators::FixedWingState(getVehicleApi(vehicle_name)->getFixedWingState());
     });
 
     (static_cast<rpc::server*>(getServer()))->
-        bind("setFixedwingControls", [&](const FixedwingRpcLibAdapators::FixedwingControls& controls, const std::string& vehicle_name) -> void {
-        getVehicleApi(vehicle_name)->setFixedwingControls(controls.to());
+        bind("setFixedWingControls", [&](const FixedWingRpcLibAdapators::FixedWingControls& controls, const std::string& vehicle_name) -> void {
+        getVehicleApi(vehicle_name)->setFixedWingControls(controls.to());
     });
 
 }
 
 //required for pimpl
-FixedwingRpcLibServer::~FixedwingRpcLibServer()
+FixedWingRpcLibServer::~FixedWingRpcLibServer()
 {
 }
 

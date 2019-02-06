@@ -9,7 +9,7 @@
 #include "common/Common.hpp"
 #include <functional>
 #include "api/RpcLibServerBase.hpp"
-#include "vehicles/FixedWing/api/FixedWingApiBase.hpp"
+#include "vehicles/fixedwing/api/FixedWingApiBase.hpp"
 
 namespace msr { namespace airlib {
 
