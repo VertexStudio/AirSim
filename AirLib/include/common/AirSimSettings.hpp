@@ -27,6 +27,7 @@ public: //types
 	static constexpr char const * kVehicleTypeArduCopterSolo = "arducoptersolo";
 	static constexpr char const * kVehicleTypeSimpleFlight = "simpleflight";
     static constexpr char const * kVehicleTypePhysXCar = "physxcar";
+    static constexpr char const * kVehicleTypePhysXFixedWing = "physxfixedwing";
     static constexpr char const * kVehicleTypeComputerVision = "computervision";
 
     static constexpr char const * kVehicleInertialFrame = "VehicleInertialFrame";
@@ -744,6 +745,12 @@ private:
         physx_car_setting->vehicle_type = kVehicleTypePhysXCar;
         vehicles[physx_car_setting->vehicle_name] = std::move(physx_car_setting);
 
+        //create default fixedwing vehicle
+        auto physx_fixedwing_setting = std::unique_ptr<VehicleSetting>(new VehicleSetting());
+        physx_fixedwing_setting->vehicle_name = "PhysXFixedWing";
+        physx_fixedwing_setting->vehicle_type = kVehicleTypePhysXFixedWing;
+        vehicles[physx_fixedwing_setting->vehicle_name] = std::move(physx_fixedwing_setting);
+
         //create default computer vision vehicle
         auto cv_setting = std::unique_ptr<VehicleSetting>(new VehicleSetting());
         cv_setting->vehicle_name = "ComputerVision";
@@ -780,6 +787,8 @@ private:
             PawnPath("Class'/AirSim/VehicleAdv/Vehicle/VehicleAdvPawn.VehicleAdvPawn_C'"));
         pawn_paths.emplace("DefaultCar",
             PawnPath("Class'/AirSim/VehicleAdv/SUV/SuvCarPawn.SuvCarPawn_C'"));
+        pawn_paths.emplace("DefaultFixedWing",
+            PawnPath("Class'/AirSim/VehicleAdv/FixedWing/FixedWingPawn.FixedWingPawn_C'"));
         pawn_paths.emplace("DefaultQuadrotor",
             PawnPath("Class'/AirSim/Blueprints/BP_FlyingPawn.BP_FlyingPawn_C'"));
         pawn_paths.emplace("DefaultComputerVision",
